@@ -4,8 +4,8 @@ import (
 	"net/url"
 	"testing"
 
-	"gopkg.in/yaml.v3"
 	"github.com/stretchr/testify/assert"
+	"gopkg.in/yaml.v3"
 )
 
 const urlYAML = `
