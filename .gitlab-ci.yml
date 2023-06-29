@@ -21,7 +21,6 @@ workflow:
 
 variables:
   GOPATH: $CI_PROJECT_DIR/.go
-  NETLIFY_DIRECTORY: public
   CI_APPLICATION_REPOSITORY: $CI_REGISTRY_IMAGE
 
 .go-cache:
@@ -68,7 +67,6 @@ build:
   - docker build -f $DOCKERFILE --pull -t $CONTAINER_IMAGE .
   - docker push $CONTAINER_IMAGE
 
-
 build-docker-image-minimal:
   stage: docker-build
   extends: .docker-build-job
@@ -92,9 +90,9 @@ lint:
   needs:
   - gomod
   extends: .go-cache
-  image: golangci/golangci-lint:v1.41.1
+  image: golangci/golangci-lint:v1.53.3
   script:
-  - golangci-lint run -v
+  - golangci-lint run -v --skip-dirs '(^|/)\.go($|/)'
   rules:
   - if: $CI_PIPELINE_SOURCE != "schedule"
 
@@ -104,10 +102,13 @@ test:
   - gomod
   extends: .go-cache
   before_script:
-  - go get github.com/t-yuki/gocover-cobertura
+  - go get github.com/boumenot/gocover-cobertura
   script:
-  - go test -race -coverpkg ./... -coverprofile=coverage.txt -covermode=atomic ./...
-  - $GOPATH/bin/gocover-cobertura < coverage.txt > coverage.xml
+  - >
+    go test -race
+    -coverprofile=coverage.txt -covermode=atomic
+    $(go list ./... | grep '^gitlab.com/lepovirta/keruu')
+  - go run github.com/boumenot/gocover-cobertura < coverage.txt > coverage.xml
   rules:
   - if: $CI_PIPELINE_SOURCE != "schedule"
   artifacts:
