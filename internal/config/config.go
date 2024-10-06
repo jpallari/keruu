@@ -2,6 +2,7 @@ package config
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -79,14 +80,20 @@ func (c *Config) ToYAML(w io.Writer) error {
 
 // Validate checks if the configuration is valid
 func (c *Config) Validate() error {
+	errs := make([]error, 0, len(c.Feeds) + 10)
+	for _, feed := range c.Feeds {
+		if err := feed.Validate(); err != nil {
+			errs = append(errs, err)
+		}
+	}
 	if len(c.Feeds) == 0 {
-		return fmt.Errorf("no feeds provided")
+		errs = append(errs, fmt.Errorf("no feeds provided"))
 	}
 	if err := c.Fetch.Validate(); err != nil {
-		return err
+		errs = append(errs, err)
 	}
 	if err := c.Aggregation.Validate(); err != nil {
-		return err
+		errs = append(errs, err)
 	}
-	return nil
+	return errors.Join(errs...)
 }

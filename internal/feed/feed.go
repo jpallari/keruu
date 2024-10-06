@@ -1,6 +1,7 @@
 package feed
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/mmcdole/gofeed"
@@ -16,15 +17,25 @@ type Config struct {
 	Include []regexp.RE `yaml:"include,omitempty"`
 }
 
-func (f *Config) IsIncluded(s string) bool {
+func (c *Config) Validate() error {
+	if c.Name == "" {
+		return fmt.Errorf("no name specified for feed")
+	}
+	if c.URL.URL == nil {
+		return fmt.Errorf("no URL specified for feed '%s'", c.Name)
+	}
+	return nil
+}
+
+func (c *Config) IsIncluded(s string) bool {
 	// Always exclude first
-	for _, filter := range f.Exclude {
+	for _, filter := range c.Exclude {
 		if filter.MatchString(s) {
 			return false
 		}
 	}
 
-	for _, filter := range f.Include {
+	for _, filter := range c.Include {
 		if filter.MatchString(s) {
 			return true
 		}
@@ -32,15 +43,15 @@ func (f *Config) IsIncluded(s string) bool {
 
 	// No match on filters?
 	// Only include it, if there was no include filters set
-	return len(f.Include) == 0
+	return len(c.Include) == 0
 }
 
-func (f *Config) PostFromGoFeedItem(
+func (c *Config) PostFromGoFeedItem(
 	linkers []Linker,
 	parsedFeed *gofeed.Feed,
 	item *gofeed.Item,
 ) *Post {
-	feedName := f.Name
+	feedName := c.Name
 	if feedName == "" {
 		feedName = parsedFeed.Title
 	}

@@ -94,6 +94,10 @@ func (s *state) fetchFeed(f *feed.Config, wg *sync.WaitGroup) {
 		}
 		return
 	}
+	if parsedFeed == nil {
+		log.Printf("empty feed '%s'", f.URL)
+		return
+	}
 
 	posts := make([]*feed.Post, 0, len(parsedFeed.Items))
 	for _, item := range parsedFeed.Items {

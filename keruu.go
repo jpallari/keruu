@@ -40,6 +40,9 @@ func main() {
 	if err := readConfig(); err != nil {
 		log.Fatalf("failed to read config from STDIN: %s", err)
 	}
+	if err := cfg.Validate(); err != nil {
+		log.Fatalf("invalid config: %s", err)
+	}
 
 	if err := writeOutput(func(w io.Writer) error {
 		// Error checking is intentionally skipped here to report it later
