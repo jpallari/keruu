@@ -89,7 +89,7 @@ lint:
   needs:
   - gomod
   extends: .go-cache
-  image: golangci/golangci-lint:v1.53.3
+  image: golangci/golangci-lint:v1.61.0
   script:
   - golangci-lint run -v --skip-dirs '(^|/)\.go($|/)'
   rules:
