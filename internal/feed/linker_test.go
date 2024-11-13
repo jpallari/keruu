@@ -1,10 +1,12 @@
 package feed
 
 import (
+	"net/url"
 	"testing"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/stretchr/testify/assert"
+	urlext "gitlab.com/lepovirta/keruu/internal/url"
 )
 
 func TestExtLinkPatternToURL(t *testing.T) {
@@ -16,14 +18,23 @@ func TestExtLinkPatternToURL(t *testing.T) {
 		Name:       "reddit",
 		URLPattern: "https://old.reddit.com/submit?url=$URL",
 	}
-	post := gofeed.Item{
+	post1 := gofeed.Item{
 		Title: "Hello World",
-		Link:  "http://example.org",
+		Link:  "https://example.org/hello-world",
 	}
+	post2 := gofeed.Item{
+		Title: "Hello World",
+		Link:  "/hello-world",
+	}
+	feedUrl_, err := url.Parse("https://example.org/")
+	assert.Nil(t, err)
+	feedUrl := urlext.URL { URL: feedUrl_ }
 
-	url1 := linker1.goFeedItemToExtLink(&post)
-	url2 := linker2.goFeedItemToExtLink(&post)
+	url1 := linker1.goFeedItemToExtLink(feedUrl, &post1)
+	url2 := linker2.goFeedItemToExtLink(feedUrl, &post1)
+	url3 := linker2.goFeedItemToExtLink(feedUrl, &post2)
 
 	assert.Equal(t, "https://duckduckgo.com/?q=Hello+World", url1.Link)
-	assert.Equal(t, "https://old.reddit.com/submit?url=http%3A%2F%2Fexample.org", url2.Link)
+	assert.Equal(t, "https://old.reddit.com/submit?url=https%3A%2F%2Fexample.org%2Fhello-world", url2.Link)
+	assert.Equal(t, "https://old.reddit.com/submit?url=https%3A%2F%2Fexample.org%2Fhello-world", url3.Link)
 }

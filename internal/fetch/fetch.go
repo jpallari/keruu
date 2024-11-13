@@ -102,7 +102,7 @@ func (s *state) fetchFeed(f *feed.Config, wg *sync.WaitGroup) {
 	posts := make([]*feed.Post, 0, len(parsedFeed.Items))
 	for _, item := range parsedFeed.Items {
 		if f.IsIncluded(item.Title) {
-			post := f.PostFromGoFeedItem(s.linkers, parsedFeed, item)
+			post := f.PostFromGoFeedItem(s.linkers, parsedFeed, f.URL, item)
 			posts = append(posts, post)
 		}
 	}

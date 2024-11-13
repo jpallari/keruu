@@ -49,6 +49,7 @@ func (c *Config) IsIncluded(s string) bool {
 func (c *Config) PostFromGoFeedItem(
 	linkers []Linker,
 	parsedFeed *gofeed.Feed,
+	feedUrl url.URL,
 	item *gofeed.Item,
 ) *Post {
 	feedName := c.Name
@@ -58,11 +59,11 @@ func (c *Config) PostFromGoFeedItem(
 
 	return &Post{
 		FeedName: feedName,
-		FeedLink: parsedFeed.Link,
+		FeedLink: feedUrl.ResolveURL(parsedFeed.Link),
 		Title:    item.Title,
-		Link:     item.Link,
+		Link:     feedUrl.ResolveURL(item.Link),
 		Time:     timeFromGoFeedItem(item),
-		ExtLinks: goFeedItemToExtLinks(linkers, item),
+		ExtLinks: goFeedItemToExtLinks(linkers, feedUrl, item),
 	}
 }
 
