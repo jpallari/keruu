@@ -4,8 +4,8 @@ import (
 	"net/url"
 	"strings"
 
+	urlext "github.com/jpallari/keruu/internal/url"
 	"github.com/mmcdole/gofeed"
-	urlext "gitlab.com/lepovirta/keruu/internal/url"
 )
 
 // ExtLink is a link to an external source

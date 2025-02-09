@@ -1,0 +1,21 @@
+name: Build
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        uses: ./.github/actions/build
+        with:
+          build-target: debug
+      - name: Upload build binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: keruu
+          path: ./keruu
+          retention-days: 7

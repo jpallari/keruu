@@ -7,10 +7,10 @@ import (
 	"io"
 	"os"
 
-	"gitlab.com/lepovirta/keruu/internal/aggregation"
-	"gitlab.com/lepovirta/keruu/internal/feed"
-	"gitlab.com/lepovirta/keruu/internal/fetch"
-	"gitlab.com/lepovirta/keruu/internal/file"
+	"github.com/jpallari/keruu/internal/aggregation"
+	"github.com/jpallari/keruu/internal/feed"
+	"github.com/jpallari/keruu/internal/fetch"
+	"github.com/jpallari/keruu/internal/file"
 	"gopkg.in/yaml.v3"
 )
 
@@ -80,7 +80,7 @@ func (c *Config) ToYAML(w io.Writer) error {
 
 // Validate checks if the configuration is valid
 func (c *Config) Validate() error {
-	errs := make([]error, 0, len(c.Feeds) + 10)
+	errs := make([]error, 0, len(c.Feeds)+10)
 	for _, feed := range c.Feeds {
 		if err := feed.Validate(); err != nil {
 			errs = append(errs, err)

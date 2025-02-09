@@ -3,8 +3,8 @@ package feed
 import (
 	"testing"
 
+	"github.com/jpallari/keruu/internal/regexp"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/lepovirta/keruu/internal/regexp"
 )
 
 func TestIsIncludedExcludeOnly(t *testing.T) {

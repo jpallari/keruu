@@ -8,10 +8,10 @@ import (
 	"log"
 	"os"
 
-	"gitlab.com/lepovirta/keruu/internal/aggregation"
-	"gitlab.com/lepovirta/keruu/internal/config"
-	"gitlab.com/lepovirta/keruu/internal/fetch"
-	"gitlab.com/lepovirta/keruu/internal/file"
+	"github.com/jpallari/keruu/internal/aggregation"
+	"github.com/jpallari/keruu/internal/config"
+	"github.com/jpallari/keruu/internal/fetch"
+	"github.com/jpallari/keruu/internal/file"
 )
 
 var cfgPath string

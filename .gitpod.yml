@@ -1,6 +1,0 @@
-image:
-  file: .devcontainer/Dockerfile
-  context: .devcontainer
-vscode:
-  extensions:
-  - golang.Go

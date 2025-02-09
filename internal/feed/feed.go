@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jpallari/keruu/internal/regexp"
+	"github.com/jpallari/keruu/internal/url"
 	"github.com/mmcdole/gofeed"
-	"gitlab.com/lepovirta/keruu/internal/regexp"
-	"gitlab.com/lepovirta/keruu/internal/url"
 )
 
 // Config contains the details of a single feed

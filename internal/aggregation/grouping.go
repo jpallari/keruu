@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"gitlab.com/lepovirta/keruu/internal/feed"
+	"github.com/jpallari/keruu/internal/feed"
 )
 
 const (

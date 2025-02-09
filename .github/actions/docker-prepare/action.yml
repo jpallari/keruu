@@ -1,0 +1,31 @@
+name: Prepare Docker environment
+inputs:
+  registry:
+    description: Name of the container image registry
+  registry-password:
+    description: Password to container image registry
+  image-name:
+    description: Name of the image
+outputs:
+  tags:
+    description: Metadata tags
+    value: ${{ steps.meta.outputs.tags }}
+  labels:
+    description: Metadata labels
+    value: ${{ steps.meta.outputs.labels }}
+runs:
+  using: composite
+  steps:
+    - name: Log in to the Container registry
+      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      with:
+        registry: ${{ inputs.registry }}
+        username: ${{ github.actor }}
+        password: ${{ inputs.registry-password }}
+
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+      with:
+        images: ${{ inputs.registry }}/${{ inputs.image-name }}
+
