@@ -8,8 +8,8 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/jpallari/keruu/internal/feed"
 	"github.com/mmcdole/gofeed"
-	"gitlab.com/lepovirta/keruu/internal/feed"
 )
 
 type Config struct {

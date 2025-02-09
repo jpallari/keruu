@@ -1,0 +1,31 @@
+name: Docker build and push
+inputs:
+  registry:
+    description: Name of the image registry
+  image-name:
+    description: Name of the image
+  tags:
+    description: Docker image tags
+  labels:
+    description: Docker image labels
+  context:
+    description: Docker build context
+    default: .
+runs:
+  using: composite
+  steps:
+    - name: Build and push Docker image
+      id: push
+      uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+      with:
+        context: ${{ inputs.context }}
+        push: true
+        tags: ${{ inputs.tags }}
+        labels: ${{ inputs.labels }}
+
+    - name: Generate artifact attestation
+      uses: actions/attest-build-provenance@v2
+      with:
+        subject-name: ${{ inputs.registry }}/${{ inputs.image-name }}
+        subject-digest: ${{ steps.push.outputs.digest }}
+        push-to-registry: true

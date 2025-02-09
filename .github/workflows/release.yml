@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare Docker environment
+        id: docker-env
+        uses: ./.github/actions/docker-prepare
+        with:
+          registry: ${{ env.REGISTRY }}
+          registry-password: ${{ secrets.GITHUB_TOKEN }}
+          image-name: ${{ env.IMAGE_NAME }}
+
+      - name: Build
+        uses: ./.github/actions/build
+        with:
+          build-target: release
+
+      - name: Docker build and push
+        uses: ./.github/actions/docker-build
+        with:
+          registry: ${{ env.REGISTRY }}
+          image-name: ${{ env.IMAGE_NAME }}
+          tags: ${{ steps.docker-env.outputs.tags }}
+          labels: ${{ steps.docker-env.outputs.labels }}

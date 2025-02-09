@@ -1,0 +1,22 @@
+name: Build
+inputs:
+  build-target:
+    description: Build target to use for the binary
+    default: debug
+runs:
+  using: composite
+  steps:
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.23.x'
+    - name: Run tests
+      shell: bash
+      run: make test
+    - name: Run lint
+      uses: golangci/golangci-lint-action@v6
+      with:
+        version: v1.60
+    - name: Build
+      shell: bash
+      run: make ${{ inputs.build-target }}

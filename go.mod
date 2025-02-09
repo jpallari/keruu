@@ -1,4 +1,4 @@
-module gitlab.com/lepovirta/keruu
+module github.com/jpallari/keruu
 
 go 1.23
 

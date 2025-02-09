@@ -4,9 +4,9 @@ import (
 	"net/url"
 	"testing"
 
+	urlext "github.com/jpallari/keruu/internal/url"
 	"github.com/mmcdole/gofeed"
 	"github.com/stretchr/testify/assert"
-	urlext "gitlab.com/lepovirta/keruu/internal/url"
 )
 
 func TestExtLinkPatternToURL(t *testing.T) {
@@ -28,7 +28,7 @@ func TestExtLinkPatternToURL(t *testing.T) {
 	}
 	feedUrl_, err := url.Parse("https://example.org/")
 	assert.Nil(t, err)
-	feedUrl := urlext.URL { URL: feedUrl_ }
+	feedUrl := urlext.URL{URL: feedUrl_}
 
 	url1 := linker1.goFeedItemToExtLink(feedUrl, &post1)
 	url2 := linker2.goFeedItemToExtLink(feedUrl, &post1)
