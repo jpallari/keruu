@@ -17,6 +17,10 @@ type Config struct {
 	PropagateErrors bool          `yaml:"propagateErrors"`
 }
 
+func (c *Config) Init() {
+	c.HTTPTimeout = time.Second * 10
+}
+
 // Validate checks if the configuration is valid
 func (c *Config) Validate() error {
 	if c.HTTPTimeout <= 0 {
@@ -25,52 +29,40 @@ func (c *Config) Validate() error {
 	return nil
 }
 
-func DefaultConfig() Config {
-	return Config{
-		HTTPTimeout: time.Second * 10,
-	}
-}
-
 type state struct {
-	config         *Config
-	feeds          []feed.Config
-	linkers        []feed.Linker
-	feedParser     *gofeed.Parser
-	collectedPosts []*feed.Post
-	errorsFound    int32
-	mutex          sync.Mutex
+	config      *Config
+	feeds       []feed.Config
+	linkers     []feed.Linker
+	feedParser  *gofeed.Parser
+	errorsFound int32
 }
 
-func newState(config *Config, feeds []feed.Config, linkers []feed.Linker) *state {
-	feedParser := gofeed.NewParser()
+func (s *state) init(config *Config, feeds []feed.Config, linkers []feed.Linker) {
+	s.config = config
+	s.feeds = feeds
+	s.linkers = linkers
+	s.feedParser = gofeed.NewParser()
 
 	httpTranport := http.DefaultTransport.(*http.Transport).Clone()
 	httpTranport.MaxIdleConns = 100
 	httpTranport.MaxIdleConnsPerHost = 100
 	httpTranport.MaxConnsPerHost = 100
 
-	feedParser.Client = &http.Client{
+	s.feedParser.Client = &http.Client{
 		Transport: httpTranport,
 		Timeout:   config.HTTPTimeout,
 	}
-
-	return &state{
-		config:         config,
-		feeds:          feeds,
-		linkers:        linkers,
-		feedParser:     feedParser,
-		collectedPosts: make([]*feed.Post, 0, 5000),
-	}
 }
 
-func (s *state) run() error {
+func (s *state) run() ([]feed.Post, error) {
 	var wg sync.WaitGroup
+	allPosts := make([][]feed.Post, len(s.feeds))
 
 	// Fetch feeds
-	for _, f := range s.feeds {
+	for i, f := range s.feeds {
 		wg.Add(1)
 		f := f
-		go s.fetchFeed(&f, &wg)
+		go s.fetchFeed(&f, &wg, &allPosts[i])
 	}
 
 	// Wait for everything to finish
@@ -78,42 +70,53 @@ func (s *state) run() error {
 
 	// Check for errors
 	if s.errorsFound > 0 {
-		return fmt.Errorf("%d feed parsing errors found", s.errorsFound)
+		return nil, fmt.Errorf("%d feed parsing errors found", s.errorsFound)
 	}
-	return nil
+
+	collectedPostsCount := 0
+	for _, posts := range allPosts {
+		collectedPostsCount += len(posts)
+	}
+
+	collectedPosts := make([]feed.Post, 0, collectedPostsCount)
+	for _, posts := range allPosts {
+		collectedPosts = append(collectedPosts, posts...)
+	}
+
+	return collectedPosts, nil
 }
 
-func (s *state) fetchFeed(f *feed.Config, wg *sync.WaitGroup) {
+func (s *state) fetchFeed(
+	f *feed.Config,
+	wg *sync.WaitGroup,
+	posts *[]feed.Post,
+) {
 	defer wg.Done()
 
 	parsedFeed, err := s.feedParser.ParseURL(f.URL.String())
 	if err != nil {
-		log.Printf("error processing feed '%s': %s", f.URL, err)
+		log.Printf("error processing feed '%s': %s", &f.URL, err)
 		if s.config.PropagateErrors {
 			atomic.AddInt32(&s.errorsFound, 1)
 		}
 		return
 	}
 	if parsedFeed == nil {
-		log.Printf("empty feed '%s'", f.URL)
+		log.Printf("empty feed '%s'", &f.URL)
 		return
 	}
 
-	posts := make([]*feed.Post, 0, len(parsedFeed.Items))
-	for _, item := range parsedFeed.Items {
+	*posts = make([]feed.Post, len(parsedFeed.Items))
+	for i, item := range parsedFeed.Items {
 		if f.IsIncluded(item.Title) {
-			post := f.PostFromGoFeedItem(s.linkers, parsedFeed, f.URL, item)
-			posts = append(posts, post)
+			(*posts)[i].FromGoFeedItem(f.Name, s.linkers, parsedFeed, f.URL, item)
 		}
 	}
-
-	defer s.mutex.Unlock()
-	s.mutex.Lock()
-	s.collectedPosts = append(s.collectedPosts, posts...)
 }
 
-func Run(config *Config, feeds []feed.Config, linkers []feed.Linker) ([]*feed.Post, error) {
-	state := newState(config, feeds, linkers)
-	err := state.run()
-	return state.collectedPosts, err
+func Run(config *Config, feeds []feed.Config, linkers []feed.Linker) ([]feed.Post, error) {
+	var state state
+	state.init(config, feeds, linkers)
+	collectedPosts, err := state.run()
+	return collectedPosts, err
 }

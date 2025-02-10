@@ -18,7 +18,7 @@ var cfgPath string
 var outPath string
 var cfg config.Config
 
-func init() {
+func main() {
 	// Setup CLI flags
 	flag.StringVar(&cfgPath, "config", "STDIN", "Location of the configuration file")
 	flag.StringVar(&outPath, "output", "STDOUT", "Location of the HTML output file")
@@ -30,11 +30,13 @@ func init() {
 	defaultUsage := flag.Usage
 	flag.Usage = func() {
 		defaultUsage()
-		fmt.Fprintf(flag.CommandLine.Output(), "\nConfiguration format:\n\n%s", config.TemplateYAML)
+		fmt.Fprintf(
+			flag.CommandLine.Output(),
+			"\nConfiguration format:\n\n%s",
+			config.TemplateYAML,
+		)
 	}
-}
 
-func main() {
 	flag.Parse()
 
 	if err := readConfig(); err != nil {
@@ -48,8 +50,9 @@ func main() {
 		// Error checking is intentionally skipped here to report it later
 		posts, err := fetch.Run(&cfg.Fetch, cfg.Feeds, cfg.Links)
 
-		aggregation := aggregation.New(&cfg.Aggregation, posts)
-		if err := aggregation.ToHTML(w); err != nil {
+		var aggr aggregation.Aggregation
+		aggr.Init(&cfg.Aggregation, posts)
+		if err := aggr.ToHTML(w); err != nil {
 			return err
 		}
 		return err

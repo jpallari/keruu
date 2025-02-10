@@ -11,9 +11,13 @@ type URL struct {
 	*url.URL
 }
 
-// NewURL converts Go URL type to our custom URL type
-func NewURL(u *url.URL) URL {
-	return URL{u}
+func QueryEscape(s string) string {
+	return url.QueryEscape(s)
+}
+
+func Parse(rawURL string) (URL, error) {
+	u, err := url.Parse(rawURL)
+	return URL{u}, err
 }
 
 // UnmarshalYAML parses an URL from a YAML formatted string
@@ -36,4 +40,8 @@ func (u *URL) ResolveURL(link string) string {
 		return u.ResolveReference(linkUrl).String()
 	}
 	return link
+}
+
+func (u *URL) String() string {
+	return u.URL.String()
 }

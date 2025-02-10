@@ -10,9 +10,9 @@ type RE struct {
 	*regexp.Regexp
 }
 
-// NewRE converts Go Regexp to our custom RE type
-func NewRE(re *regexp.Regexp) RE {
-	return RE{re}
+func Compile(expr string) (RE, error) {
+	re, err := regexp.Compile(expr)
+	return RE{re}, err
 }
 
 func MustCompile(res string) RE {

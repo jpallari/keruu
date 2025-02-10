@@ -18,12 +18,12 @@ import (
 const TemplateYAML = `feeds:
   - name: <NAME>
     url: <URL>
-	exclude:
-	  - <REGEX>
-	  ...
-	include:
-	  - <REGEX>
-	  ...
+    exclude:
+      - <REGEX>
+      ...
+    include:
+      - <REGEX>
+      ...
   - name: <NAME>
     url: <URL>
   - ...
@@ -52,8 +52,8 @@ type Config struct {
 // Init formats the config with default values
 func (c *Config) Init() {
 	c.Feeds = nil
-	c.Fetch = fetch.DefaultConfig()
-	c.Aggregation = aggregation.DefaultConfig()
+	c.Fetch.Init()
+	c.Aggregation.Init()
 }
 
 // FromYAMLFile reads the configuration from a YAML formatted file

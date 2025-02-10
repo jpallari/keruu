@@ -10,7 +10,7 @@ import (
 
 type PostGroup struct {
 	Name  string
-	Posts []*feed.Post
+	Posts []feed.Post
 }
 
 type Aggregation struct {
@@ -19,20 +19,20 @@ type Aggregation struct {
 	PostGroups []PostGroup
 }
 
-func New(config *Config, posts []*feed.Post) *Aggregation {
+func (a *Aggregation) Init(
+	config *Config,
+	posts []feed.Post,
+) {
 	sortPostsByTime(posts)
 	posts = posts[0:config.MaxPosts]
-
-	return &Aggregation{
-		Config:     config,
-		Time:       time.Now(),
-		PostGroups: groupPosts(posts, config.groupFunc()),
-	}
+	a.Config = config
+	a.PostGroups = groupPosts(posts, config.groupFunc())
+	a.Time = time.Now()
 }
 
-func sortPostsByTime(posts []*feed.Post) {
+func sortPostsByTime(posts []feed.Post) {
 	sort.Slice(posts, func(i, j int) bool {
-		return posts[i].After(posts[j])
+		return posts[i].After(&posts[j])
 	})
 }
 

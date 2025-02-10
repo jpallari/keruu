@@ -2,11 +2,9 @@ package feed
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/jpallari/keruu/internal/regexp"
 	"github.com/jpallari/keruu/internal/url"
-	"github.com/mmcdole/gofeed"
 )
 
 // Config contains the details of a single feed
@@ -46,60 +44,3 @@ func (c *Config) IsIncluded(s string) bool {
 	return len(c.Include) == 0
 }
 
-func (c *Config) PostFromGoFeedItem(
-	linkers []Linker,
-	parsedFeed *gofeed.Feed,
-	feedUrl url.URL,
-	item *gofeed.Item,
-) *Post {
-	feedName := c.Name
-	if feedName == "" {
-		feedName = parsedFeed.Title
-	}
-
-	return &Post{
-		FeedName: feedName,
-		FeedLink: feedUrl.ResolveURL(parsedFeed.Link),
-		Title:    item.Title,
-		Link:     feedUrl.ResolveURL(item.Link),
-		Time:     timeFromGoFeedItem(item),
-		ExtLinks: goFeedItemToExtLinks(linkers, feedUrl, item),
-	}
-}
-
-type Post struct {
-	FeedName string
-	FeedLink string
-	Title    string
-	Link     string
-	Time     *time.Time
-	ExtLinks []ExtLink
-}
-
-func timeFromGoFeedItem(item *gofeed.Item) *time.Time {
-	if item.PublishedParsed != nil {
-		return item.PublishedParsed
-	} else if item.UpdatedParsed != nil {
-		return item.UpdatedParsed
-	}
-	return nil
-}
-
-func (p *Post) FormattedTime() string {
-	if p.Time == nil {
-		return ""
-	}
-	return p.Time.Format("2006-01-02")
-}
-
-func (p *Post) After(other *Post) bool {
-	// No timestamp means it's considered older
-	if p.Time == nil {
-		return false
-	} else if other.Time == nil {
-		return true
-	}
-
-	// Newest first
-	return p.Time.After(*other.Time)
-}

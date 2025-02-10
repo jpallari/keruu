@@ -63,7 +63,7 @@ func isValidGrouping(s string) bool {
 	}
 }
 
-func groupPosts(posts []*feed.Post, groupF GroupFunc) []PostGroup {
+func groupPosts(posts []feed.Post, groupF GroupFunc) []PostGroup {
 	// No grouping specified => all in one unamed group
 	if groupF == nil {
 		return []PostGroup{
@@ -79,7 +79,7 @@ func groupPosts(posts []*feed.Post, groupF GroupFunc) []PostGroup {
 	groups = append(groups, PostGroup{})
 
 	for index, post := range posts {
-		name := groupF(index, post)
+		name := groupF(index, &post)
 		group := &groups[groupIndex]
 
 		// If the current group name doesn't match the computed name,
@@ -93,7 +93,7 @@ func groupPosts(posts []*feed.Post, groupF GroupFunc) []PostGroup {
 		// Initialize the group if needed
 		if group.Name == "" {
 			group.Name = name
-			group.Posts = make([]*feed.Post, 100)
+			group.Posts = make([]feed.Post, 0, 100)
 		}
 
 		// Finally, add the post to the current group

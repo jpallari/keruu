@@ -14,14 +14,12 @@ type Config struct {
 	Grouping    string `yaml:"grouping,omitempty"`
 }
 
-func DefaultConfig() Config {
-	return Config{
-		Title:       "Keruu",
-		Description: "Aggregation of posts",
-		MaxPosts:    1000,
-		CSSString:   defaultCSS,
-		Grouping:    defaultGrouping,
-	}
+func (c *Config) Init() {
+	c.Title = "Keruu"
+	c.Description = "Aggregation of posts"
+	c.MaxPosts = 1000
+	c.CSSString = defaultCSS
+	c.Grouping = defaultGrouping
 }
 
 // Validate checks if the configuration is valid

@@ -1,7 +1,6 @@
 package url
 
 import (
-	"net/url"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -24,11 +23,11 @@ func TestURLUnmarshallingToYAML(t *testing.T) {
 	// setup expected URLs
 	expectedURLs := make([]URL, 0, len(urlList))
 	for _, urlStr := range urlList {
-		res, err := url.Parse(urlStr)
+		res, err := Parse(urlStr)
 		if err != nil {
 			t.Fatalf("failed to parse URL: %s", err)
 		}
-		expectedURLs = append(expectedURLs, NewURL(res))
+		expectedURLs = append(expectedURLs, res)
 	}
 
 	// unmarshal YAML

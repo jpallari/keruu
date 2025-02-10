@@ -1,7 +1,6 @@
 package regexp
 
 import (
-	"regexp"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -22,11 +21,11 @@ func TestRegexpUnmarshallingToYAML(t *testing.T) {
 	// setup expected regexps
 	expectedRegexps := make([]RE, 0, len(regexpList))
 	for _, reStr := range regexpList {
-		re, err := regexp.Compile(reStr)
+		re, err := Compile(reStr)
 		if err != nil {
 			t.Fatalf("failed to parse regexp: %s", err)
 		}
-		expectedRegexps = append(expectedRegexps, NewRE(re))
+		expectedRegexps = append(expectedRegexps, re)
 	}
 
 	// unmarshal YAML

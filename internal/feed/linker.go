@@ -1,10 +1,9 @@
 package feed
 
 import (
-	"net/url"
 	"strings"
 
-	urlext "github.com/jpallari/keruu/internal/url"
+	"github.com/jpallari/keruu/internal/url"
 	"github.com/mmcdole/gofeed"
 )
 
@@ -20,7 +19,7 @@ type Linker struct {
 	URLPattern string `yaml:"url"`
 }
 
-func (l *Linker) goFeedItemToExtLink(feedUrl urlext.URL, item *gofeed.Item) ExtLink {
+func (l *Linker) goFeedItemToExtLink(feedUrl url.URL, item *gofeed.Item) ExtLink {
 	feedLink := feedUrl.ResolveURL(item.Link)
 	link := strings.ReplaceAll(l.URLPattern, "$TITLE", url.QueryEscape(item.Title))
 	link = strings.ReplaceAll(link, "$URL", url.QueryEscape(feedLink))
@@ -30,7 +29,7 @@ func (l *Linker) goFeedItemToExtLink(feedUrl urlext.URL, item *gofeed.Item) ExtL
 	}
 }
 
-func goFeedItemToExtLinks(linkers []Linker, feedUrl urlext.URL, item *gofeed.Item) []ExtLink {
+func goFeedItemToExtLinks(linkers []Linker, feedUrl url.URL, item *gofeed.Item) []ExtLink {
 	extLinks := make([]ExtLink, 0, len(linkers))
 	for _, linker := range linkers {
 		extLinks = append(extLinks, linker.goFeedItemToExtLink(feedUrl, item))
