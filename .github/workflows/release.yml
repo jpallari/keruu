@@ -13,10 +13,11 @@ jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
       attestations: write
+      checks: write
+      contents: read
       id-token: write
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
