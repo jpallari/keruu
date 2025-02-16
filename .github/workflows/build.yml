@@ -3,19 +3,73 @@ name: Build
 on:
   pull_request:
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      pull-requests: read
+      checks: write
+      attestations: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Prepare Docker environment
+        id: docker-env
+        uses: ./.github/actions/docker-prepare
+        with:
+          registry: ${{ env.REGISTRY }}
+          registry-password: ${{ secrets.GITHUB_TOKEN }}
+          image-name: ${{ env.IMAGE_NAME }}
+
       - name: Build
         uses: ./.github/actions/build
         with:
           build-target: debug
+
       - name: Upload build binary
         uses: actions/upload-artifact@v4
         with:
           name: keruu
           path: ./keruu
           retention-days: 7
+
+      - name: Run Keruu
+        run:
+          ./keruu -config ./example/config.yaml -output ./example/keruu.html
+
+      - name: Upload Keruu action output
+        uses: actions/upload-artifact@v4
+        with:
+          name: keruu.html
+          path: ./example/keruu.html
+          retention-days: 7
+
+      - name: Docker build and push
+        uses: ./.github/actions/docker-build
+        with:
+          registry: ${{ env.REGISTRY }}
+          image-name: ${{ env.IMAGE_NAME }}
+          tags: ${{ steps.docker-env.outputs.tags }}
+          labels: ${{ steps.docker-env.outputs.labels }}
+
+      - name: Run Keruu action
+        uses: ./
+        with:
+          config-path: ./example/config.yaml
+          output-path: ./example/keruu-action.html
+
+      - name: Upload Keruu action output
+        uses: actions/upload-artifact@v4
+        with:
+          name: keruu-action.html
+          path: ./example/keruu-action.html
+          retention-days: 7
+

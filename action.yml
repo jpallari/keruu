@@ -1,0 +1,18 @@
+name: Keruu
+description: Collect RSS feeds to a single HTML file using Keruu
+inputs:
+  config-path:
+    description: Path to Keruu config
+    required: true
+  output-path:
+    description: Path to Keruu output (HTML file)
+    required: true
+runs:
+  using: docker
+  image: docker://ghcr.io/jpallari/keruu:pr-10
+  args:
+    - -config
+    - ${{ inputs.config-path }}
+    - -output
+    - /github/workspace/${{ inputs.output-path }}
+
