@@ -57,7 +57,31 @@ Keruu is configured using YAML. Here's all the configurations accepted by Keruu:
 
 ## Example
 
-See [keruu-example](https://gitlab.com/lepovirta/keruu-example) for an example of Keruu in action.
+See the `example/config.yaml` directory for an example configuration.
+
+See [lepo-keruu](https://github.com/jpallari/lepo-keruu) for an example of Keruu scheduled via GitHub Actions.
+
+## GitHub Action
+
+You can run Keruu via GitHub Actions like this:
+
+```yaml
+jobs:
+  build:
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Keruu
+        uses: jpallari/keruu@main
+        with:
+          config-path: config.yaml
+          output-path: index.html
+```
+
+The action accepts two parameters:
+
+* `config-path`: Path to Keruu config
+* `output-path`: Path to Keruu output (HTML file)
 
 ## Docker
 
