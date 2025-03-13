@@ -1,6 +1,8 @@
 module github.com/jpallari/keruu
 
-go 1.23
+go 1.23.0
+
+toolchain go1.23.7
 
 require (
 	github.com/mmcdole/gofeed v1.3.0
@@ -9,7 +11,7 @@ require (
 )
 
 require (
-	github.com/PuerkitoBio/goquery v1.10.1 // indirect
+	github.com/PuerkitoBio/goquery v1.10.2 // indirect
 	github.com/andybalholm/cascadia v1.3.3 // indirect
 	github.com/boumenot/gocover-cobertura v1.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -19,8 +21,8 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/mod v0.17.0 // indirect
-	golang.org/x/net v0.34.0 // indirect
-	golang.org/x/sync v0.11.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
+	golang.org/x/net v0.37.0 // indirect
+	golang.org/x/sync v0.12.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d // indirect
 )
