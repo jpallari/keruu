@@ -29,22 +29,22 @@ $(TARGET): go.* $(SOURCES)
 lint:
 	golangci-lint run -v --skip-dirs '(^|/)\.go($|/)'
 
-.PHONY: test
-test:
+coverage.txt: go.* $(SOURCES)
 	$(GO) version
 	CGO_ENABLED=1 $(GO) test \
 		-race \
-		-coverprofile=coverage.txt \
+		-coverprofile=$@ \
 		-covermode=atomic \
 		$(GO_LOCAL_MODS)
-
-coverage.txt: test
 
 coverage.xml: coverage.txt
 	$(GO) tool gocover-cobertura < $< > $@
 
 .PHONY: coverage
 coverage: coverage.xml
+
+.PHONY: test
+test: coverage.txt
 
 .PHONY: clean
 clean:
