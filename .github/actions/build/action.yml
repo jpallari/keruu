@@ -15,9 +15,9 @@ runs:
       shell: bash
       run: make test
     - name: Run lint
-      uses: golangci/golangci-lint-action@v6
+      uses: golangci/golangci-lint-action@v7
       with:
-        version: v1.60
+        version: v2.1
     - name: Build
       shell: bash
       run: make ${{ inputs.build-target }}
