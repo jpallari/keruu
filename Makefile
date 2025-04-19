@@ -1,9 +1,17 @@
-GO_LOCAL_MODS = $(shell go list ./...)
-COVERAGE_XML_TOOL = "github.com/boumenot/gocover-cobertura"
+# Base flags
+GO = go
+
+# Override the base flags using makerc.mk
+-include .makerc.mk
+
+# Flags that makerc.mk doesn't touch
+GO_LOCAL_MODS = $(shell $(GO) list ./...)
 RELEASE_FLAGS = -ldflags "-s -w -extldflags '-static'"
 DEBUG_FLAGS =
 TARGET = keruu
 SOURCES = $(shell find . -name '*.go')
+
+# Targets
 
 .PHONY: debug
 debug: FLAGS = $(DEBUG_FLAGS)
@@ -14,7 +22,8 @@ release: FLAGS = $(RELEASE_FLAGS)
 release: $(TARGET)
 
 $(TARGET): go.* $(SOURCES)
-	CGO_ENABLED=0 go build $(FLAGS) -o $@ .
+	$(GO) version
+	CGO_ENABLED=0 $(GO) build $(FLAGS) -o $@ .
 
 .PHONY: lint
 lint:
@@ -22,7 +31,8 @@ lint:
 
 .PHONY: test
 test:
-	go test \
+	$(GO) version
+	CGO_ENABLED=1 $(GO) test \
 		-race \
 		-coverprofile=coverage.txt \
 		-covermode=atomic \
@@ -31,11 +41,7 @@ test:
 coverage.txt: test
 
 coverage.xml: coverage.txt
-	go run $(COVERAGE_XML_TOOL) < $< > $@
-
-.PHONY: init-tools
-init-tools:
-	go get $(COVERAGE_XML_TOOL)
+	$(GO) tool gocover-cobertura < $< > $@
 
 .PHONY: coverage
 coverage: coverage.xml
@@ -48,10 +54,10 @@ clean:
 
 .PHONY: update-deps
 update-deps:
-	go get -u
-	go mod tidy
+	$(GO) get -u
+	$(GO) mod tidy
 
 .PHONY: download-deps
 download-deps:
-	go mod download
+	$(GO) mod download
 
