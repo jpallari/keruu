@@ -30,7 +30,7 @@ func main() {
 	defaultUsage := flag.Usage
 	flag.Usage = func() {
 		defaultUsage()
-		fmt.Fprintf(
+		_, _ = fmt.Fprintf(
 			flag.CommandLine.Output(),
 			"\nConfiguration format:\n\n%s",
 			config.TemplateYAML,
