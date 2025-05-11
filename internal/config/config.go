@@ -7,10 +7,10 @@ import (
 	"io"
 	"os"
 
-	"github.com/jpallari/keruu/internal/aggregation"
-	"github.com/jpallari/keruu/internal/feed"
-	"github.com/jpallari/keruu/internal/fetch"
-	"github.com/jpallari/keruu/internal/file"
+	"go.lepovirta.org/keruu/internal/aggregation"
+	"go.lepovirta.org/keruu/internal/feed"
+	"go.lepovirta.org/keruu/internal/fetch"
+	"go.lepovirta.org/keruu/internal/file"
 	"gopkg.in/yaml.v3"
 )
 

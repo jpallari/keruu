@@ -5,7 +5,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/jpallari/keruu/internal/feed"
+	"go.lepovirta.org/keruu/internal/feed"
 )
 
 type PostGroup struct {

@@ -1,4 +1,4 @@
-module github.com/jpallari/keruu
+module go.lepovirta.org/keruu
 
 go 1.24.0
 

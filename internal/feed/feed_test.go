@@ -3,7 +3,7 @@ package feed
 import (
 	"testing"
 
-	"github.com/jpallari/keruu/internal/regexp"
+	"go.lepovirta.org/keruu/internal/regexp"
 	"github.com/stretchr/testify/assert"
 )
 

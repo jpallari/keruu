@@ -3,8 +3,8 @@ package feed
 import (
 	"fmt"
 
-	"github.com/jpallari/keruu/internal/regexp"
-	"github.com/jpallari/keruu/internal/url"
+	"go.lepovirta.org/keruu/internal/regexp"
+	"go.lepovirta.org/keruu/internal/url"
 )
 
 // Config contains the details of a single feed
