@@ -3,7 +3,7 @@ package feed
 import (
 	"time"
 
-	"github.com/jpallari/keruu/internal/url"
+	"go.lepovirta.org/keruu/internal/url"
 	"github.com/mmcdole/gofeed"
 )
 

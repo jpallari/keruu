@@ -8,7 +8,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/jpallari/keruu/internal/feed"
+	"go.lepovirta.org/keruu/internal/feed"
 	"github.com/mmcdole/gofeed"
 )
 
