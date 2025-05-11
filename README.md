@@ -4,10 +4,10 @@ Aggregating RSS/Atom feeds to a single HTML page.
 
 ## Installation
 
-First, you need to install [Go](https://golang.org/dl/) version 1.23 or higher.
-After that, you can use `go get` to install Keruu:
+First, you need to install [Go](https://golang.org/dl/) version 1.24 or higher.
+After that, you can use `go install` to install Keruu:
 
-    $ go get go.lepovirta.org/keruu
+    $ go install go.lepovirta.org/keruu@latest
 
 The executable should now be in path `$GOPATH/bin/keruu` (or `~/go/bin/keruu`).
 
